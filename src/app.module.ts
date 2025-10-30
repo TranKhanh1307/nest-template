@@ -25,6 +25,7 @@ import Joi from 'joi';
       load: [appConfig, databaseConfig, apiConfig, swaggerConfig, awsConfig],
       isGlobal: true,
       cache: true,
+      skipProcessEnv: true, //Load env variables from config files instead of directly from process.env
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test', 'provision')

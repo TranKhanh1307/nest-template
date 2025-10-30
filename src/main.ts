@@ -10,22 +10,8 @@ import { SwaggerConfig } from './config/swagger.config';
 
 declare const module: any;
 
-// Constants for config keys
-const CONFIG_KEYS = {
-  API: 'api',
-  APP: 'app',
-  SWAGGER: 'swagger',
-};
-
-// Type-safe config helper
-function getConfig<T>(service: ConfigService, key: string): T {
-  const value = service.get<T>(key);
-  if (!value) throw new Error(`Missing configuration for key: ${key}`);
-  return value;
-}
-
 // Setup global prefixes, versioning, and middleware
-function setupGlobalConfigs(app: INestApplication, apiConfig: ApiConfig) {
+function configureGlobal(app: INestApplication, apiConfig: ApiConfig) {
   app.setGlobalPrefix(apiConfig.prefix);
   app.enableVersioning({
     defaultVersion: apiConfig.version,
@@ -35,7 +21,7 @@ function setupGlobalConfigs(app: INestApplication, apiConfig: ApiConfig) {
 }
 
 // Setup Swagger documentation
-function setupSwaggerDocs(app: INestApplication, swaggerConfig: SwaggerConfig) {
+function configureSwagger(app: INestApplication, swaggerConfig: SwaggerConfig) {
   if (process.env.NODE_ENV === 'production') return; // Disable Swagger in production
 
   const config = new DocumentBuilder()
@@ -51,7 +37,7 @@ function setupSwaggerDocs(app: INestApplication, swaggerConfig: SwaggerConfig) {
 }
 
 // Handle Hot Module Replacement
-function enableHotReload(module: any, app: INestApplication) {
+function configureHotReload(module: any, app: INestApplication) {
   if (!module.hot) return;
   module.hot.accept();
   module.hot.dispose(() => app.close());
@@ -61,16 +47,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  const apiConfig = getConfig<ApiConfig>(configService, CONFIG_KEYS.API);
-  const appConfig = getConfig<AppConfig>(configService, CONFIG_KEYS.APP);
-  const swaggerConfig = getConfig<SwaggerConfig>(
-    configService,
-    CONFIG_KEYS.SWAGGER,
-  );
+  const apiConfig = configService.getOrThrow<ApiConfig>('api');
+  const appConfig = configService.getOrThrow<AppConfig>('app');
+  const swaggerConfig = configService.getOrThrow<SwaggerConfig>('swagger');
 
-  setupGlobalConfigs(app, apiConfig);
-  setupSwaggerDocs(app, swaggerConfig);
-  enableHotReload(module, app);
+  configureGlobal(app, apiConfig);
+  configureSwagger(app, swaggerConfig);
+  configureHotReload(module, app);
 
   await app.listen(appConfig.port, appConfig.host);
 
