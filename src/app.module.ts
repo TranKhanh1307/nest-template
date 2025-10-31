@@ -14,7 +14,7 @@ import databaseConfig from './config/database.config';
 import apiConfig from './config/api.config';
 import swaggerConfig from './config/swagger.config';
 import awsConfig from './config/aws.config';
-import Joi from 'joi';
+import { validationSchema } from './env.validation';
 
 @Module({
   imports: [
@@ -25,13 +25,9 @@ import Joi from 'joi';
       load: [appConfig, databaseConfig, apiConfig, swaggerConfig, awsConfig],
       isGlobal: true,
       cache: true,
+      expandVariables: true,
       skipProcessEnv: true, //Load env variables from config files instead of directly from process.env
-      validationSchema: Joi.object({
-        NODE_ENV: Joi.string()
-          .valid('development', 'production', 'test', 'provision')
-          .default('development'),
-        PORT: Joi.number().port().default(3000),
-      }),
+      validationSchema: validationSchema,
     }),
   ],
   controllers: [AppController, AuthController],

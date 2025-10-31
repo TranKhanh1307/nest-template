@@ -58,9 +58,10 @@ async function bootstrap() {
   await app.listen(appConfig.port, appConfig.host);
 
   const url = await app.getUrl();
-  console.log(`🚀 Application running on: ${url}/${apiConfig.prefix}`);
+  const prefix = apiConfig.prefix ? `/${apiConfig.prefix}` : '';
+  console.log(`🚀 Application running on: ${url}${prefix}`);
   console.log(
-    `📘 Swagger UI available at: ${url}/${apiConfig.prefix}/${swaggerConfig.prefix}`,
+    `📘 Swagger UI available at: ${url}${prefix}/${swaggerConfig.prefix}`,
   );
 }
 
