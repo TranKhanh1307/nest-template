@@ -7,6 +7,8 @@ import { logger } from './common/middlewares/logger.middleware';
 import { ApiConfig } from './config/api.config';
 import { AppConfig } from './config/app.config';
 import { SwaggerConfig } from './config/swagger.config';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 
 declare const module: any;
 
@@ -18,11 +20,19 @@ function configureGlobal(app: INestApplication, apiConfig: ApiConfig) {
     type: VersioningType.URI,
   });
   app.use(logger);
+  app.useGlobalInterceptors(
+    new TransformInterceptor(),
+    new TimeoutInterceptor(),
+  );
 }
 
 // Setup Swagger documentation
-function configureSwagger(app: INestApplication, swaggerConfig: SwaggerConfig) {
-  if (process.env.NODE_ENV === 'production') return; // Disable Swagger in production
+function configureSwagger(
+  app: INestApplication,
+  swaggerConfig: SwaggerConfig,
+  appConfig: AppConfig,
+) {
+  if (appConfig.nodeEnv === 'production') return; // Disable Swagger in production
 
   const config = new DocumentBuilder()
     .setTitle('Nest Template Example')
@@ -52,7 +62,7 @@ async function bootstrap() {
   const swaggerConfig = configService.getOrThrow<SwaggerConfig>('swagger');
 
   configureGlobal(app, apiConfig);
-  configureSwagger(app, swaggerConfig);
+  configureSwagger(app, swaggerConfig, appConfig);
   configureHotReload(module, app);
 
   await app.listen(appConfig.port, appConfig.host);
@@ -60,9 +70,11 @@ async function bootstrap() {
   const url = await app.getUrl();
   const prefix = apiConfig.prefix ? `/${apiConfig.prefix}` : '';
   console.log(`🚀 Application running on: ${url}${prefix}`);
-  console.log(
-    `📘 Swagger UI available at: ${url}${prefix}/${swaggerConfig.prefix}`,
-  );
+  if (appConfig.nodeEnv !== 'production') {
+    console.log(
+      `📘 Swagger UI available at: ${url}${prefix}/${swaggerConfig.prefix}`,
+    );
+  }
 }
 
 bootstrap();

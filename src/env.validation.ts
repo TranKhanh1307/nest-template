@@ -35,4 +35,6 @@ export const validationSchema = Joi.object({
     .uri({ scheme: ['http', 'https'] })
     .default('http://localhost'),
   SUPPORT_EMAIL: Joi.string().email().default('support@example.com'),
+
+  JWT_SECRET: Joi.string().default('YOUR_SECRET_KEY'),
 });
