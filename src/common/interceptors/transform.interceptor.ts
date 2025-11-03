@@ -7,8 +7,9 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Response } from 'express';
 
-export interface Response<T> {
+export interface CustomResponse<T> {
   data: T;
   code: HttpStatus;
   message: string;
@@ -16,16 +17,17 @@ export interface Response<T> {
 
 @Injectable()
 export class TransformInterceptor<T>
-  implements NestInterceptor<T, Response<T>>
+  implements NestInterceptor<T, CustomResponse<T>>
 {
   intercept(
-    context: ExecutionContext,
+    ctx: ExecutionContext,
     next: CallHandler,
-  ): Observable<Response<T>> {
+  ): Observable<CustomResponse<T>> {
+    const response = ctx.switchToHttp().getResponse<Response>();
     return next.handle().pipe(
       map((data: T) => ({
         data,
-        code: HttpStatus.OK,
+        code: response.statusCode,
         message: 'Successful',
       })),
     );

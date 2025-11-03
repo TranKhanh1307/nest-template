@@ -28,7 +28,13 @@ function configureGlobal(app: INestApplication, apiConfig: ApiConfig) {
     new TransformInterceptor(),
     new TimeoutInterceptor(),
   );
-  app.useGlobalPipes(new ValidationPipe());
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      // disableErrorMessages: true,
+      transform: true,
+    }),
+  );
 }
 
 // Setup Swagger documentation
