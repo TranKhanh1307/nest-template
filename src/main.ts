@@ -1,7 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { INestApplication, VersioningType } from '@nestjs/common';
+import {
+  INestApplication,
+  ValidationPipe,
+  VersioningType,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { logger } from './common/middlewares/logger.middleware';
 import { ApiConfig } from './config/api.config';
@@ -24,6 +28,7 @@ function configureGlobal(app: INestApplication, apiConfig: ApiConfig) {
     new TransformInterceptor(),
     new TimeoutInterceptor(),
   );
+  app.useGlobalPipes(new ValidationPipe());
 }
 
 // Setup Swagger documentation
