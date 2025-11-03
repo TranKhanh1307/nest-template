@@ -33,8 +33,6 @@ import { validationSchema } from './env.validation';
   controllers: [AppController, AuthController],
   providers: [
     AppService,
-    AuthService,
-    UserService,
     {
       provide: APP_FILTER,
       useClass: AllExceptionFilter,
