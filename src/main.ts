@@ -13,6 +13,7 @@ import { AppConfig } from './config/app.config';
 import { SwaggerConfig } from './config/swagger.config';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
+import compression from 'compression';
 
 declare const module: any;
 
@@ -23,7 +24,7 @@ function configureGlobal(app: INestApplication, apiConfig: ApiConfig) {
     defaultVersion: apiConfig.version,
     type: VersioningType.URI,
   });
-  app.use(logger);
+  app.use(logger, compression());
   app.useGlobalInterceptors(
     new TransformInterceptor(),
     new TimeoutInterceptor(),
@@ -31,7 +32,7 @@ function configureGlobal(app: INestApplication, apiConfig: ApiConfig) {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      // disableErrorMessages: true,
+      // disableErrorMessages: true,  //Should disable error messages in production
       transform: true,
     }),
   );
