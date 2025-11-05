@@ -1,8 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthController } from './auth/auth.controller';
-import { AuthModule } from './auth/auth.module';
+import { AuthController } from './core/auth/auth.controller';
+import { AuthModule } from './core/auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
@@ -14,7 +14,7 @@ import swaggerConfig from './config/swagger.config';
 import awsConfig from './config/aws.config';
 import { validationSchema } from './env.validation';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
-import { AlsModule } from './als/als.module';
+import { AlsModule } from './core/als/als.module';
 import { AlsMiddleware } from './common/middlewares/als.middleware';
 
 @Module({
@@ -47,6 +47,6 @@ import { AlsMiddleware } from './common/middlewares/als.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AlsMiddleware).forRoutes('*');
+    consumer.apply(AlsMiddleware).forRoutes('*path');
   }
 }

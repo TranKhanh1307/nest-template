@@ -26,7 +26,7 @@ export class TransformInterceptor<T>
     const response = ctx.switchToHttp().getResponse<Response>();
     return next.handle().pipe(
       map((data: T) => ({
-        data,
+        data: data,
         code: response.statusCode,
         message: 'Successful',
       })),
