@@ -4,12 +4,18 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
+  Logger,
+  Inject,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+  constructor(
+    private readonly httpAdapterHost: HttpAdapterHost,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+  ) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
     // In certain situations `httpAdapter` might not be available in the
@@ -34,7 +40,7 @@ export class AllExceptionFilter implements ExceptionFilter {
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     };
 
-    console.log(exception);
+    this.logger.error(exception);
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }

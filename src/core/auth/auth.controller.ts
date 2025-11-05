@@ -32,6 +32,7 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Body() body: CreateUserDto): Promise<any> {
-    return this.authService.register(body);
+    // return this.authService.register(body);
+    throw new Error('Method not implemented');
   }
 }

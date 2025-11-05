@@ -16,11 +16,15 @@ import { validationSchema } from './env.validation';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { AlsModule } from './core/als/als.module';
 import { AlsMiddleware } from './common/middlewares/als.middleware';
+import { WinstonModule } from 'nest-winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
+import winston from 'winston';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
+    AlsModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env'],
       load: [appConfig, databaseConfig, apiConfig, swaggerConfig, awsConfig],
@@ -30,7 +34,23 @@ import { AlsMiddleware } from './common/middlewares/als.middleware';
       skipProcessEnv: true, //Load env variables from config files instead of directly from process.env
       validationSchema: validationSchema,
     }),
-    AlsModule,
+    WinstonModule.forRoot({
+      transports: [
+        new DailyRotateFile({
+          level: 'error',
+          filename: 'logs/application-%DATE%.log',
+          datePattern: 'YYYY-MM-DD-HH',
+          // zippedArchive: true,
+          maxSize: '20m',
+          maxFiles: '14d',
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.json(),
+            winston.format.errors({ stack: true }),
+          ),
+        }),
+      ],
+    }),
   ],
   controllers: [AppController, AuthController],
   providers: [
