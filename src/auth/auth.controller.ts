@@ -25,8 +25,8 @@ export class AuthController {
   }
 
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  async getProfile() {
+    return this.authService.getProfile();
   }
 
   @Public()

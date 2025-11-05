@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthController } from './auth/auth.controller';
@@ -15,6 +15,7 @@ import awsConfig from './config/aws.config';
 import { validationSchema } from './env.validation';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { AlsModule } from './als/als.module';
+import { AlsMiddleware } from './common/middlewares/als.middleware';
 
 @Module({
   imports: [
@@ -44,4 +45,8 @@ import { AlsModule } from './als/als.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AlsMiddleware).forRoutes('*');
+  }
+}
