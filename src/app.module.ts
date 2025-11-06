@@ -19,6 +19,7 @@ import { AlsMiddleware } from './common/middlewares/als.middleware';
 import { WinstonModule } from 'nest-winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import winston from 'winston';
+import { Console } from 'winston/lib/winston/transports';
 
 @Module({
   imports: [
@@ -35,20 +36,28 @@ import winston from 'winston';
       validationSchema: validationSchema,
     }),
     WinstonModule.forRoot({
+      format: winston.format.combine(
+        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        winston.format.printf(({ timestamp, level, message, stack }) => {
+          return stack
+            ? `[${timestamp}] ${level.toUpperCase()}: ${message}\n${stack}`
+            : `[${timestamp}] ${level.toUpperCase()}: ${message}`;
+        }),
+        winston.format.colorize({ all: true }),
+        // winston.format.json(),
+        // winston.format.prettyPrint({ colorize: true }),
+      ),
       transports: [
         new DailyRotateFile({
-          level: 'error',
-          filename: 'logs/application-%DATE%.log',
-          datePattern: 'YYYY-MM-DD-HH',
-          // zippedArchive: true,
+          level: 'debug',
+          dirname: 'logs',
+          filename: 'application-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          zippedArchive: true,
           maxSize: '20m',
-          maxFiles: '14d',
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.json(),
-            winston.format.errors({ stack: true }),
-          ),
+          maxFiles: '1d',
         }),
+        new Console(),
       ],
     }),
   ],

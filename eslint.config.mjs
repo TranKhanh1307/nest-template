@@ -35,6 +35,8 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-unsafe-assignment': 'warn',
       '@typescript-eslint/no-unsafe-call': 'warn',
+      '@typescript-eslint/restrict-template-expressions': 'warn',
+      '@typescript-eslint/no-base-to-string': 'warn',
       'prettier/prettier': ['error', { endOfLine: 'auto' }],
     },
   },

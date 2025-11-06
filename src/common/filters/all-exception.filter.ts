@@ -4,11 +4,11 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-  Logger,
   Inject,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -40,7 +40,9 @@ export class AllExceptionFilter implements ExceptionFilter {
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     };
 
-    this.logger.error(exception);
+    this.logger.error((exception as Error).message, {
+      stack: (exception as Error).stack,
+    });
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
