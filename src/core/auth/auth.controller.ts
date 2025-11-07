@@ -5,7 +5,6 @@ import {
   UseGuards,
   Body,
   HttpCode,
-  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from 'src/common/guards/local-auth.guard';
@@ -22,11 +21,6 @@ export class AuthController {
   @HttpCode(200)
   async login(@Request() req) {
     return this.authService.login(req.user);
-  }
-
-  @Get('profile')
-  async getProfile() {
-    return this.authService.getProfile();
   }
 
   @Public()

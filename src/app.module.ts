@@ -17,6 +17,8 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { AlsModule } from './core/als/als.module';
 import { AlsMiddleware } from './common/middlewares/als.middleware';
 import { LoggerModule } from './core/logger/logger.module';
+import { RolesGuard } from './common/guards/roles.guard';
+import { UserController } from './user/user.controller';
 
 @Module({
   imports: [
@@ -34,7 +36,7 @@ import { LoggerModule } from './core/logger/logger.module';
     }),
     LoggerModule,
   ],
-  controllers: [AppController, AuthController],
+  controllers: [AppController, AuthController, UserController],
   providers: [
     AppService,
     {
@@ -44,6 +46,10 @@ import { LoggerModule } from './core/logger/logger.module';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })
