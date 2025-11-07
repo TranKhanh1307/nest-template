@@ -25,7 +25,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
               datePattern: 'YYYY-MM-DD',
               zippedArchive: true,
               maxSize: '20m',
-              maxFiles: '14d', //Or '1d' = 1 day
+              maxFiles: '14d',
             }),
           );
         } else {

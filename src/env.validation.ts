@@ -25,11 +25,13 @@ export const validationSchema = Joi.object({
     .default('docs'),
   SWAGGER_VERSION: Joi.string().default('1.0'),
 
+  DB_TYPE: Joi.string().default('mysql'),
   DB_HOST: Joi.string().default('localhost'),
   DB_PORT: Joi.number().port().default(3306),
   DB_USER: Joi.string().default('root'),
   DB_PASSWORD: Joi.string().allow(''),
   DB_NAME: Joi.string().default('mydb'),
+  DB_URL: Joi.string().default('mysql://root:@localhost:3306/mydb'),
 
   APP_URL: Joi.string()
     .uri({ scheme: ['http', 'https'] })

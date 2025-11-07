@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import {
-  ConsoleLogger,
   INestApplication,
   ValidationPipe,
   VersioningType,
@@ -30,7 +29,6 @@ function configureGlobal(app: INestApplication, apiConfig: ApiConfig) {
     new TransformInterceptor(),
     new TimeoutInterceptor(),
   );
-
   app.useGlobalPipes(
     new ValidationPipe({
       // disableErrorMessages: true,  //Should disable error messages in production
@@ -67,14 +65,6 @@ function configureHotReload(module: any, app: INestApplication) {
 }
 
 async function bootstrap() {
-  // const app = await NestFactory.create(AppModule, {
-  //   logger: new ConsoleLogger({
-  //     // json: true,
-  //     // colors: true,
-  //     // timestamp: false,
-  //   }),
-  // });
-
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
