@@ -5,6 +5,7 @@ export default registerAs('app', (): AppConfig => {
     nodeEnv: process.env.NODE_ENV || 'development',
     host: process.env.SERVER_HOST || 'localhost',
     port: Number(process.env.SERVER_PORT) || 3000,
+    logLevel: process.env.LOG_LEVEL || 'debug',
   };
 });
 
@@ -12,4 +13,5 @@ export interface AppConfig {
   nodeEnv: string;
   host: string;
   port: number;
+  logLevel: string;
 }

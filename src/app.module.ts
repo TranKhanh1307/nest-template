@@ -16,10 +16,7 @@ import { validationSchema } from './env.validation';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { AlsModule } from './core/als/als.module';
 import { AlsMiddleware } from './common/middlewares/als.middleware';
-import { WinstonModule } from 'nest-winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
-import winston from 'winston';
-import { Console } from 'winston/lib/winston/transports';
+import { LoggerModule } from './core/logger/logger.module';
 
 @Module({
   imports: [
@@ -35,31 +32,7 @@ import { Console } from 'winston/lib/winston/transports';
       skipProcessEnv: true, //Load env variables from config files instead of directly from process.env
       validationSchema: validationSchema,
     }),
-    WinstonModule.forRoot({
-      format: winston.format.combine(
-        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        winston.format.printf(({ timestamp, level, message, stack }) => {
-          return stack
-            ? `[${timestamp}] ${level.toUpperCase()}: ${message}\n${stack}`
-            : `[${timestamp}] ${level.toUpperCase()}: ${message}`;
-        }),
-        winston.format.colorize({ all: true }),
-        // winston.format.json(),
-        // winston.format.prettyPrint({ colorize: true }),
-      ),
-      transports: [
-        new DailyRotateFile({
-          level: 'debug',
-          dirname: 'logs',
-          filename: 'application-%DATE%.log',
-          datePattern: 'YYYY-MM-DD',
-          zippedArchive: true,
-          maxSize: '20m',
-          maxFiles: '1d',
-        }),
-        new Console(),
-      ],
-    }),
+    LoggerModule,
   ],
   controllers: [AppController, AuthController],
   providers: [
