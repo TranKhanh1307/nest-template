@@ -13,18 +13,18 @@ export class UserService implements OnModuleInit {
 
   async onModuleInit() {
     this.users = [
-      {
+      new User({
         userId: 1,
         username: 'john',
         password: await hashPassword('changeme'),
         role: Role.Admin,
-      },
-      {
+      }),
+      new User({
         userId: 2,
         username: 'maria',
         password: await hashPassword('guess'),
         role: Role.User,
-      },
+      }),
     ];
   }
 
@@ -48,12 +48,8 @@ export class UserService implements OnModuleInit {
     };
   }
 
-  async findAll(): Promise<any> {
-    const userDto = this.users.map((user) => {
-      const { password, ...rest } = user;
-      return rest;
-    });
-    return userDto;
+  async findAll() {
+    return this.users;
   }
 
   async getProfile() {

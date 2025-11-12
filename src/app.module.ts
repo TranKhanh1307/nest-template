@@ -1,10 +1,15 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './core/auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AllExceptionFilter } from './common/filters/all-exception.filter';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
@@ -19,6 +24,7 @@ import { LoggerModule } from './core/logger/logger.module';
 import { RolesGuard } from './common/guards/roles.guard';
 import { EmailModule } from './email/email.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -26,6 +32,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     UserModule,
     AlsModule,
     EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env'],
       load: [appConfig, databaseConfig, apiConfig, swaggerConfig, awsConfig],
@@ -52,6 +59,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
     },
   ],
 })
