@@ -10,7 +10,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     WinstonModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: (configService: ConfigService) => {
         const isProduction =
           configService.getOrThrow<string>('app.nodeEnv') === 'production';
         const formats = [format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' })];

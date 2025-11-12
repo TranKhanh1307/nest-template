@@ -1,7 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthController } from './core/auth/auth.controller';
 import { AuthModule } from './core/auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
@@ -18,7 +17,6 @@ import { AlsModule } from './core/als/als.module';
 import { AlsMiddleware } from './common/middlewares/als.middleware';
 import { LoggerModule } from './core/logger/logger.module';
 import { RolesGuard } from './common/guards/roles.guard';
-import { UserController } from './user/user.controller';
 
 @Module({
   imports: [
@@ -36,7 +34,7 @@ import { UserController } from './user/user.controller';
     }),
     LoggerModule,
   ],
-  controllers: [AppController, AuthController, UserController],
+  controllers: [AppController],
   providers: [
     AppService,
     {
