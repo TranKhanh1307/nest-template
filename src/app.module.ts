@@ -17,12 +17,15 @@ import { AlsModule } from './core/als/als.module';
 import { AlsMiddleware } from './common/middlewares/als.middleware';
 import { LoggerModule } from './core/logger/logger.module';
 import { RolesGuard } from './common/guards/roles.guard';
+import { EmailModule } from './email/email.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
     AlsModule,
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env'],
       load: [appConfig, databaseConfig, apiConfig, swaggerConfig, awsConfig],
@@ -32,6 +35,7 @@ import { RolesGuard } from './common/guards/roles.guard';
       skipProcessEnv: true, //Load env variables from config files instead of directly from process.env
       validationSchema: validationSchema,
     }),
+    EmailModule,
     LoggerModule,
   ],
   controllers: [AppController],

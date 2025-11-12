@@ -3,12 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { comparePassword } from 'src/common/util/bcrypt.util';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { UserRegisteredEvent } from './events/user-registered.event';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -31,7 +34,7 @@ export class AuthService {
     };
   }
 
-  async register(user: CreateUserDto): Promise<any> {
-    return this.usersService.create(user);
+  async register(user: CreateUserDto) {
+    this.eventEmitter.emit('user.registered', new UserRegisteredEvent(user));
   }
 }

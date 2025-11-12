@@ -25,7 +25,7 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  async register(@Body() body: CreateUserDto): Promise<any> {
-    return this.authService.register(body);
+  async register(@Body() body: CreateUserDto) {
+    this.authService.register(body);
   }
 }
