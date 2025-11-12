@@ -1,3 +1,4 @@
+// import metadata from './metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -14,6 +15,7 @@ import { SwaggerConfig } from './config/swagger.config';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import compression from 'compression';
+import { CustomResponse } from './common/interceptors/transform.interceptor';
 
 declare const module: any;
 
@@ -38,7 +40,7 @@ function configureGlobal(app: INestApplication, apiConfig: ApiConfig) {
 }
 
 // Setup Swagger documentation
-function configureSwagger(
+async function configureSwagger(
   app: INestApplication,
   swaggerConfig: SwaggerConfig,
   appConfig: AppConfig,
@@ -46,11 +48,45 @@ function configureSwagger(
   if (appConfig.nodeEnv === 'production') return; // Disable Swagger in production
 
   const config = new DocumentBuilder()
+    .addGlobalResponse(
+      {
+        description: 'Successful responses',
+        status: '2XX',
+        example: {
+          data: {},
+          code: 200,
+          message: 'Successful',
+        },
+      },
+      {
+        type: 'object',
+        description: 'Server error responses',
+        status: '5XX',
+        example: {
+          status: 500,
+          message: 'Internal Server Error',
+          path: '/',
+          timestamp: 'yyyy-MM-dd HH:mm:ss',
+        },
+      },
+      {
+        description: 'Client error responses',
+        status: '4XX',
+        example: {
+          status: 400,
+          message: 'Bad Request',
+          path: '/',
+          timestamp: 'yyyy-MM-dd HH:mm:ss',
+        },
+      },
+    )
+    .addBearerAuth()
     .setTitle('Nest Template Example')
     .setDescription('The Nest Template API description')
     .setVersion(swaggerConfig.version)
     .build();
 
+  // await SwaggerModule.loadPluginMetadata(metadata);
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(swaggerConfig.prefix, app, document, {
     useGlobalPrefix: true,
@@ -73,8 +109,8 @@ async function bootstrap() {
   const swaggerConfig = configService.getOrThrow<SwaggerConfig>('swagger');
 
   configureGlobal(app, apiConfig);
-  configureSwagger(app, swaggerConfig, appConfig);
   configureHotReload(module, app);
+  await configureSwagger(app, swaggerConfig, appConfig);
 
   await app.listen(appConfig.port, appConfig.host);
 

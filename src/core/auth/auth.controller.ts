@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from 'src/common/guards/local-auth.guard';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { Public } from 'src/common/decorators/public.decorator';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +20,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(200)
-  async login(@Request() req) {
+  async login(@Body() body: LoginDto, @Request() req) {
     return this.authService.login(req.user);
   }
 
