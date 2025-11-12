@@ -41,5 +41,5 @@ export const validationSchema = Joi.object({
     .valid('silly', 'debug', 'verbose', 'http', 'info', 'warn', 'error')
     .default('info'),
 
-  JWT_SECRET: Joi.string().default('YOUR_SECRET_KEY'),
+  JWT_SECRET: Joi.string().required(),
 });
