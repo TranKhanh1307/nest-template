@@ -7,6 +7,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { format } from 'date-fns';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 
@@ -36,7 +37,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     const responseBody = {
       statusCode: httpStatus,
       message: message,
-      timestamp: new Date().toISOString(),
+      timestamp: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     };
 
