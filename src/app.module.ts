@@ -25,6 +25,7 @@ import { RolesGuard } from './common/guards/roles.guard';
 import { EmailModule } from './email/email.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     }),
     EmailModule,
     LoggerModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [

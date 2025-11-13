@@ -1,5 +1,5 @@
 // import metadata from './metadata';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import {
@@ -15,7 +15,6 @@ import { SwaggerConfig } from './config/swagger.config';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import compression from 'compression';
-import { CustomResponse } from './common/interceptors/transform.interceptor';
 
 declare const module: any;
 
@@ -28,7 +27,7 @@ function configureGlobal(app: INestApplication, apiConfig: ApiConfig) {
   });
   app.use(logger, compression());
   app.useGlobalInterceptors(
-    new TransformInterceptor(),
+    new TransformInterceptor(app.get(Reflector)),
     new TimeoutInterceptor(),
   );
   app.useGlobalPipes(
