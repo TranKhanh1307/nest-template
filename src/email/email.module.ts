@@ -4,5 +4,6 @@ import { UserRegisteredListener } from './listeners/user-registered.listener';
 
 @Module({
   providers: [EmailService, UserRegisteredListener],
+  exports: [EmailService],
 })
 export class EmailModule {}
