@@ -26,6 +26,7 @@ import { EmailModule } from './email/email.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { FileModule } from './file/file.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { FileModule } from './file/file.module';
     EmailModule,
     LoggerModule,
     FileModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [
